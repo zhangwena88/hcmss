@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.hc.bean.Plan" table="plan">
+		<id name="plan_id" column="plan_id">
+			<generator class="native"/>
+		</id>
+		
+		<property name="plan_start_date" column="plan_start_date"/>
+		<property name="plan_end_date" column="plan_end_date"/>
+		<property name="plan_content" column="plan_content"/>
+		<property name="group_id" column="group_id"/>
+		<property name="teacher_id" column="teacher_id"/>
+	</class>
+	
+</hibernate-mapping>    

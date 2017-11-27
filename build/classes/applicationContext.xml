@@ -70,8 +70,12 @@
 				<!-- <value>com/ithc/model/Dict.hbm.xml</value>
 				<value>com/ithc/model/Linkman.hbm.xml</value>
 				<value>com/ithc/model/Visit.hbm.xml</value> -->
+				
 				<value>com/hc/bean/testTeacher/Paper.hbm.xml</value>
 				<value>com/hc/bean/testTeacher/Topic.hbm.xml</value>
+				<value>com/hc/bean/Template.hbm.xml</value>
+				<value>com/hc/bean/Direction.hbm.xml</value>
+				<value>com/hc/bean/Plan.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -120,6 +124,54 @@
 	<bean id="topicDao" class="com.hc.dao.testTeacher.TopicDAOImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>		
 	</bean>
+	
+	
+	<!-- excelUtil -->
+	<bean id="excelUtil" class="com.hc.util.ExcelUtil"/>
+	<!-- DateUtil -->
+	<bean id="dateUtil" class="com.hc.util.DateUtil"></bean>
+	
+	
+	<!-- 计划模板 -->
+	<!-- action -->
+	<bean id="templateAction" class="com.hc.action.TemplateAction" scope="prototype">
+		<property name="excelUtil" ref="excelUtil"></property>
+		<property name="templateService" ref="templateService"/>
+	</bean>
+	<!-- service -->
+	<bean id="templateService" class="com.hc.services.TemplateServiceImpl">
+		<property name="templateDao" ref="templateDao"/>
+	</bean>
+	<!-- dao -->
+	<bean id="templateDao" class="com.hc.dao.TemplateDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- 课程方向 -->
+	<bean id="directionAction" class="com.hc.action.DirectionAction" scope="prototype">
+		<property name="directionServices" ref="directionServices"/>
+	</bean>
+	<bean id="directionServices" class="com.hc.services.DirectionServicesImpl">
+		<property name="directionDao" ref="directionDao"/>
+	</bean>
+	<bean id="directionDao" class="com.hc.dao.DirectionDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- 具体计划 -->
+	<bean id="planAction" class="com.hc.action.PlanAction" scope="prototype">
+		<property name="planService" ref="planService"/>
+		<property name="dateUtil" ref="dateUtil"/>
+	</bean>
+	<bean id="planService" class="com.hc.services.PlanServiceImpl">
+		<property name="planDao" ref="planDao"/>
+	</bean>
+	<bean id="planDao" class="com.hc.dao.PlanDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	
+	
 	<!-- 
 		客户的模块
 	 -->

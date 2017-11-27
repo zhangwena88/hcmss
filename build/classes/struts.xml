@@ -9,7 +9,34 @@
 	<constant name="struts.multipart.maxSize" value="20971520"/>
 	
 	<!-- 先配置包结构 -->
-	<package name="crm" extends="struts-default" namespace="/">
+	<package name="hcmss" extends="struts-default" namespace="/">
+	
+	
+	
+	<!-- 教学计划模板 -->
+	<action name="template_*" class="templateAction"  method="{1}">
+		<result name="add">/jsp/template/add.jsp</result>
+		<result name="list">/jsp/template/list.jsp</result>
+		<result name="listAgain" type="redirectAction">template_findNameByPage.action</result>
+		<result name="edit">/jsp/template/edit.jsp</result>
+		<result name="success">/jsp/template/success.jsp</result>
+		<result name="input">error.jsp</result>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	
+	<!-- 教学计划方向 -->
+	<action name="direction_*" class="directionAction" method="{1}">
+	</action>
+	
+	<!-- 教学具体计划 -->
+	<action name="plan_*" class="planAction" method="{1}">
+		<result name="select">/jsp/plan/select.jsp</result>
+		<result name="list">/jsp/plan/list.jsp</result>
+	</action>
+	
+	
+	
+	
 	
 	<!-- 配置拦截器,设置那些方法不拦截 -->
 	<!-- <interceptors>

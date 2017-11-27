@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.hc.bean.Template" table="template">
+		<id name="template_id" column="template_id">
+			<generator class="native"/>
+		</id>
+		
+		<property name="template_week" column="template_week"/>
+		<property name="template_name" column="template_name"/>
+		<property name="template_content" column="template_content"/>
+		<property name="direction_id" column="direction_id"/>
+	</class>
+	
+</hibernate-mapping>    
