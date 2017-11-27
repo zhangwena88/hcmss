@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.hc.bean.testTeacher.Topic" table="topic">
+		<id name="topic_id" column="topic_id">
+			<generator class="native"/>
+		</id>
+		<property name="topic_choice" column="topic_choice"/>
+		<property name="topic_subject" column="topic_subject"/>
+		<property name="teacher_id" column="teacher_id"/>
+		
+	</class>
+	
+</hibernate-mapping>  

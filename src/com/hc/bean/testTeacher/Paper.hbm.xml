@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping>
+	<class name="com.hc.bean.testTeacher.Paper" table="paper">
+		<id name="paper_id" column="paper_id">
+			<generator class="native"/>
+		</id>
+		<property name="paper_subject" column="paper_subject"/>
+		<property name="paper_topic" column="paper_topic"/>
+		<property name="paper_a" column="paper_a"/>
+		<property name="paper_b" column="paper_b"/>
+		<property name="paper_c" column="paper_c"/>
+		<property name="paper_d" column="paper_d"/>
+		<property name="paper_e" column="paper_e"/>
+		<property name="paper_correct" column="paper_correct"/>
+	</class>
+	
+</hibernate-mapping>  

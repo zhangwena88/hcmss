@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 开启注解的扫描 -->
+	<context:component-scan base-package="com.hc"/>
+	
+	<!--引入数据库数据的配置文件  -->
+	<context:property-placeholder location="classpath:db.properties" />
+	
+	<!-- c3p0连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
+		
+        <!-- 指定连接池中保留的最大连接数. Default:15-->  
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>  
+        <!-- 指定连接池中保留的最小连接数-->  
+        <property name="minPoolSize" value="${jdbc.minPoolSize}"/>  
+        <!-- 指定连接池的初始化连接数  取值应在minPoolSize 与 maxPoolSize 之间.Default:3-->  
+        <property name="initialPoolSize" value="${jdbc.initialPoolSize}"/>  
+        <!-- 最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。 Default:0-->  
+        <property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>  
+        <!-- 当连接池中的连接耗尽的时候c3p0一次同时获取的连接数. Default:3-->  
+        <property name="acquireIncrement" value="${jdbc.acquireIncrement}"/>  
+        <!-- JDBC的标准,用以控制数据源内加载的PreparedStatements数量。  
+        但由于预缓存的statements属于单个connection而不是整个连接池所以设置这个参数需要考虑到多方面的因数.如果maxStatements与maxStatementsPerConnection均为0,则缓存被关闭。Default:0-->  
+        <property name="maxStatements" value="${jdbc.maxStatements}"/>  
+        <!-- 每60秒检查所有连接池中的空闲连接.Default:0 -->  
+        <property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}"/> 
+	</bean>
+	
+	
+	<!-- LocalSessionFactoryBean加载配置文件 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 先加载连接池 -->
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 加载方言，加载可选 -->
+		<property name="hibernateProperties">
+			<props>
+				<!-- 设置为mysql的sql格式 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		
+		<!-- 引入映射的配置文件 -->
+		<property name="mappingResources">
+			<list>
+				<!--  <value>com/ithc/bean/User.hbm.xml</value>
+				 <value>com/ithc/bean/Customer.hbm.xml</value>
+				 <value>com/ithc/bean/Dict.hbm.xml</value>
+				 <value>com/ithc/bean/Linkman.hbm.xml</value>
+				 <value>com/ithc/bean/Visit.hbm.xml</value> -->
+				<!-- <value>com/ithc/model/Dict.hbm.xml</value>
+				<value>com/ithc/model/Linkman.hbm.xml</value>
+				<value>com/ithc/model/Visit.hbm.xml</value> -->
+				<value>com/hc/bean/testTeacher/Paper.hbm.xml</value>
+				<value>com/hc/bean/testTeacher/Topic.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 先配置平台事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- 开启事务的注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!--  
+		用户模块
+	-->
+	
+	<!-- action -->
+	<bean id="insertAction" class="com.hc.action.testTeacher.InsertAction" scope="prototype">
+		<property name="paperService" ref="paperService"/>
+	</bean>
+
+	<!-- service -->
+	 <bean id="paperService" class="com.hc.services.testTeacher.PaperServiceImpl">
+		<property name="paperDao" ref="paperDao"/>
+	</bean>
+
+	<!-- dao -->
+	<bean id="paperDao" class="com.hc.dao.testTeacher.PaperDAOImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>		
+	</bean>
+	
+	
+	
+	
+	<!-- action -->
+	<bean id="TopicAction" class="com.hc.action.testTeacher.TopicAction" scope="prototype">
+		<property name="topicService" ref="topicService"/>
+	</bean>
+
+	<!-- service -->
+	 <bean id="topicService" class="com.hc.services.testTeacher.TopicServiceImpl">
+		<property name="topicDao" ref="topicDao"/>
+	</bean>
+
+	<!-- dao -->
+	<bean id="topicDao" class="com.hc.dao.testTeacher.TopicDAOImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>		
+	</bean>
+	<!-- 
+		客户的模块
+	 -->
+	 <!-- action -->
+	<!-- <bean id="customerAction" class="com.ithc.action.CustomerAction" scope="prototype">
+		<property name="customerService" ref="customerService"/>
+	</bean>  -->
+	<!--service  -->
+	<!-- <bean id="customerService" class="com.ithc.service.CustomerServiceImpl">
+			<property name="customerDao" ref="customerDao"/>	
+	</bean>  -->
+	<!-- dao -->
+	<!-- <bean id="customerDao" class="com.ithc.dao.CustomerDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>  -->
+	
+	
+	<!-- 
+	数据字典模块 
+	-->
+	<!-- <bean id="dictAction" class="com.ithc.action.DictAction" scope="prototype">
+		<property name="dictService" ref="dictService"/>
+	
+	</bean>
+	
+	<bean id="dictService" class="com.ithc.service.DictServiceImpl">
+		<property name="dictDao" ref="dictDao"/>	
+	</bean>
+	
+	<bean id="dictDao" class="com.ithc.dao.DictDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean> -->
+	<!--  
+		联系人模块
+	-->
+	<!-- <bean id="linkManAction"  class="com.ithc.action.LinkManAction" scope="prototype">
+		 <property name="linkManService" ref="linkManService" />
+	</bean>
+	
+	<bean id="linkManService" class="com.ithc.service.LinkManServiceImpl">
+		<property name="linkManDao" ref="linkManDao"/>
+	</bean>
+	
+	<bean id="linkManDao" class="com.ithc.dao.LinkManDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean> -->
+	
+	<!-- 
+		拜访模块
+	 -->
+	<!-- <bean id="visitAction" class="com.ithc.action.VisitAction" scope="prototype">
+		<property name="visitService" ref="visitService"/>
+	</bean>
+	
+	<bean id="visitService" class="com.ithc.service.VisitServiceImpl">
+		<property name="visitDao" ref="visitDao"/>
+	</bean>
+	
+	<bean id="visitDao" class="com.ithc.dao.VisitDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	 -->
+	
+	
+	<!-- 用户模块 -->
+	<!--action层  -->
+	<!-- <bean id="userAction" class="com.ithc.action.UserAction" scope="prototype">
+			<property name="userService" ref="userService"></property>					
+	</bean> -->
+		
+	<!-- service层 -->
+	<!-- <bean id="userService" class="com.ithc.service.UserServiceImpl">
+		<property name="userDao" ref="userDao"></property>
+	</bean> -->
+	
+	<!-- dao层 -->
+	<!-- <bean id="userDao" class="com.ithc.dao.UserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean> -->
+		
+	<!-- 配置客户模块 -->
+	<!-- <bean id="customerAction" class="com.ithc.action.CustomerAction" scope="prototype">
+		<property name="customerService" ref="customerService"/>
+	</bean> -->
+	
+	<!-- <bean id="customerService" class="com.ithc.service.CustomerServiceImpl">
+		<property name="customerDao" ref="customerDao"/>
+	</bean> -->
+	
+	<!-- <bean id="customerDao" class="com.ithc.dao.CustomerDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean> -->
+	
+	<!-- 字典模块 -->
+	<!-- <bean id="dictAction" class="com.ithc.action.DictAction" scope="prototype">
+		<property name="dictService" ref="dictService"></property>
+	</bean>
+	
+	<bean id="dictService" class="com.ithc.service.DictServiceImpl">
+		<property name="dictDao" ref="dictDao"></property>	
+	</bean>	
+	
+	<bean id="dictDao" class="com.ithc.dao.DictDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean> -->
+	
+	<!-- 配置联系人模块 -->
+	<!-- <bean id="linkmanAction" class="com.ithc.action.LinkmanAction" scope="prototype">
+		<property name="linkmanService" ref="linkmanService"></property>
+	</bean>
+	
+	<bean id="linkmanService" class="com.ithc.service.LinkmanServiceImpl">
+		<property name="linkmanDao" ref="linkmanDao"></property>
+	</bean>
+	
+	<bean id="linkmanDao" class="com.ithc.dao.LinkmanDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean> -->
+	
+	
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
